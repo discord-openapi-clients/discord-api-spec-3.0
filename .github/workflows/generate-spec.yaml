@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   generate-spec:
+    if: ${{ github.event.label.name == 'Submodule Update' || github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
 
     steps:
