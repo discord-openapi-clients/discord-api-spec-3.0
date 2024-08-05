@@ -36,6 +36,14 @@ jobs:
       - name: Generate OpenAPI 3.0.x spec
         run: openapi-down-convert --input discord-api-spec/specs/openapi.json --output openapi-3.0.yaml
 
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'openapi-3.0.yaml'
+          author_name: 'discord-api-clients'
+          author_email: 'rxdn@users.noreply.github.com'
+          message: 'Generate OpenAPI 3.0.x spec'
+
       - name: Push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
