@@ -1,0 +1,42 @@
+name: Generate OpenAPI 3.0.x spec
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-spec:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Install dependencies
+        working-directory: ./openapi-down-convert
+        run: npm ci
+
+      - name: Build and install openapi-down-convert
+        working-directory: ./openapi-down-convert
+        run: npm run build && npm i -g .
+
+      - name: Generate OpenAPI 3.0.x spec
+        run: openapi-down-convert --input discord-api-spec/specs/openapi.json --output openapi-3.0.yaml
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git add ./openapi-3.0.yaml && git commit -m "Generated OpenAPI 3.0.x spec" && git push
