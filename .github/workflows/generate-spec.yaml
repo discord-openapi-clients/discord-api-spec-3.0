@@ -51,4 +51,4 @@ jobs:
       - name: Push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git add ./openapi-3.0.yaml && git commit -m "Generated OpenAPI 3.0.x spec" && git push
+        run: git push
