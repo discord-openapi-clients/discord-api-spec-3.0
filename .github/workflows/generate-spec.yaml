@@ -53,3 +53,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: git push
+
+      - name: Automatically Merge Pull Request
+        uses: sudo-bot/action-pull-request-merge@v1.1.0
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.pull_request.number }}
+          merge-method: squash
+          merge-title: "🤖 Update openapi-3.0.yaml from upstream"
