@@ -2136,6 +2136,11 @@ paths:
         required: true
     post:
       operationId: create_interaction_response
+      parameters:
+        - name: with_response
+          in: query
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -2170,6 +2175,12 @@ paths:
               x-discord-union: oneOf
         required: true
       responses:
+        '200':
+          description: 200 response for create_interaction_response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InteractionCallbackResponse'
         '204':
           description: 204 response for create_interaction_response
         4XX:
@@ -8941,6 +8952,21 @@ components:
             - $ref: '#/components/schemas/IncomingWebhookInteractionRequest'
       required:
         - type
+    CreateMessageInteractionCallbackResponse:
+      type: object
+      properties:
+        type:
+          type: integer
+          enum:
+            - 4
+          allOf:
+            - $ref: '#/components/schemas/InteractionCallbackTypes'
+          format: int32
+        message:
+          $ref: '#/components/schemas/MessageResponse'
+      required:
+        - type
+        - message
     CreateOrUpdateThreadTagRequest:
       type: object
       properties:
@@ -12190,6 +12216,18 @@ components:
               - $ref: '#/components/schemas/ApplicationCommandOptionStringChoice'
           maxItems: 25
           nullable: true
+    InteractionCallbackResponse:
+      type: object
+      properties:
+        interaction:
+          $ref: '#/components/schemas/InteractionResponse'
+        resource:
+          oneOf:
+            - $ref: '#/components/schemas/CreateMessageInteractionCallbackResponse'
+            - $ref: '#/components/schemas/UpdateMessageInteractionCallbackResponse'
+            - type: 'null'
+      required:
+        - interaction
     InteractionCallbackTypes:
       type: integer
       oneOf:
@@ -12219,6 +12257,26 @@ components:
       type: integer
       oneOf: []
       format: int32
+    InteractionResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SnowflakeType'
+        type:
+          $ref: '#/components/schemas/InteractionTypes'
+        response_message_id:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/SnowflakeType'
+        response_message_loading:
+          type: boolean
+          nullable: true
+        response_message_ephemeral:
+          type: boolean
+          nullable: true
+      required:
+        - id
+        - type
     InteractionTypes:
       type: integer
       oneOf:
@@ -16910,6 +16968,21 @@ components:
                 #/components/schemas/IncomingWebhookUpdateForInteractionCallbackRequestPartial
       required:
         - type
+    UpdateMessageInteractionCallbackResponse:
+      type: object
+      properties:
+        type:
+          type: integer
+          enum:
+            - 7
+          allOf:
+            - $ref: '#/components/schemas/InteractionCallbackTypes'
+          format: int32
+        message:
+          $ref: '#/components/schemas/MessageResponse'
+      required:
+        - type
+        - message
     UpdateOnboardingPromptRequest:
       type: object
       properties:
