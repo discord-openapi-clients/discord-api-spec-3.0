@@ -2188,6 +2188,28 @@ paths:
       security:
         - {}
         - BotToken: []
+  /channels/{channel_id}/send-soundboard-sound:
+    parameters:
+      - name: channel_id
+        in: path
+        schema:
+          $ref: '#/components/schemas/SnowflakeType'
+        required: true
+    post:
+      operationId: send_soundboard_sound
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoundboardSoundSendRequest'
+        required: true
+      responses:
+        '204':
+          description: 204 response for send_soundboard_sound
+        4XX:
+          $ref: '#/components/responses/ClientErrorResponse'
+      security:
+        - BotToken: []
   /channels/{channel_id}/thread-members/{user_id}:
     parameters:
       - name: channel_id
@@ -4425,6 +4447,19 @@ paths:
         schema:
           $ref: '#/components/schemas/SnowflakeType'
         required: true
+    get:
+      operationId: get_guild_role
+      responses:
+        '200':
+          description: 200 response for get_guild_role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuildRoleResponse'
+        4XX:
+          $ref: '#/components/responses/ClientErrorResponse'
+      security:
+        - BotToken: []
     delete:
       operationId: delete_guild_role
       responses:
@@ -4838,6 +4873,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StageInstanceResponse'
+        4XX:
+          $ref: '#/components/responses/ClientErrorResponse'
+      security:
+        - BotToken: []
+  /sticker-packs/{pack_id}:
+    parameters:
+      - name: pack_id
+        in: path
+        schema:
+          $ref: '#/components/schemas/SnowflakeType'
+        required: true
+    get:
+      operationId: get_sticker_pack
+      responses:
+        '200':
+          description: 200 response for get_sticker_pack
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StickerPackResponse'
         4XX:
           $ref: '#/components/responses/ClientErrorResponse'
       security:
@@ -15394,6 +15449,9 @@ components:
           type: integer
           format: int32
           nullable: true
+        approximate_user_install_count:
+          type: integer
+          format: int32
         explicit_content_filter:
           $ref: '#/components/schemas/ApplicationExplicitContentFilterTypes'
         team:
@@ -15408,6 +15466,7 @@ components:
         - flags
         - redirect_uris
         - owner
+        - approximate_user_install_count
         - explicit_content_filter
     PrivateChannelRequestPartial:
       type: object
@@ -16175,6 +16234,17 @@ components:
         - sound_id
         - volume
         - available
+    SoundboardSoundSendRequest:
+      type: object
+      properties:
+        sound_id:
+          $ref: '#/components/schemas/SnowflakeType'
+        source_guild_id:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/SnowflakeType'
+      required:
+        - sound_id
     SpamLinkRuleResponse:
       type: object
       properties:
