@@ -3969,6 +3969,8 @@ paths:
           $ref: '#/components/responses/ClientErrorResponse'
       security:
         - BotToken: []
+        - OAuth2:
+            - guilds
     post:
       operationId: create_guild_channel
       requestBody:
